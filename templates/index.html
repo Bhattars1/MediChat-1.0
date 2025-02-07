@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediChat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .chat-container {
+            max-width: 1200px;
+            margin: auto;
+            height: 600px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .user-message {
+            text-align: right;
+            color: white;
+            background: #007bff;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .bot-message {
+            text-align: left;
+            color: black;
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">MediChat</h1>
+        <div class="chat-container" id="chat-box"></div>
+        <div class="input-group mt-3">
+            <input type="text" id="user-input" class="form-control" placeholder="Type a message...">
+            <button class="btn btn-primary" id="send-btn">Send</button>
+        </div>
+    </div>
+    <script>
+        function sendMessage() {
+            let userInput = document.getElementById('user-input').value;
+            if (userInput.trim() === '') return;
+            
+            let chatBox = document.getElementById('chat-box');
+            let userMessage = `<div class='user-message'>${userInput}</div>`;
+            chatBox.innerHTML += userMessage;
+            document.getElementById('user-input').value = '';
+            
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userInput }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                let botMessage = `<div class='bot-message'>${data.response}</div>`;
+                chatBox.innerHTML += botMessage;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+        document.getElementById('user-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
