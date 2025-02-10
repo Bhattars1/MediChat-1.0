@@ -38,8 +38,12 @@ The BioGPT model was fine-tuned using the PubMed QA dataset. First, the dataset 
  After training experiment with the model in the chatbot by running the chatbot file:
 
  `chatbot.py`
+
+ ![Image 1](images/image_1.png)
   
  Finally run `app.py` to get a user interface. 
+
+  ![Image 2](images/image_2.png)
 
  The model can also be fine tuned on the notebook named `finetuning BioGPT.ipynb`.
 
